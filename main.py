@@ -4,6 +4,7 @@ import sys
 import datetime
 
 import config
+# config.py
 # user = ""
 # updater_client_key = ""
 #
