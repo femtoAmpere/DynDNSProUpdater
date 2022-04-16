@@ -1,6 +1,7 @@
 import urllib.request
 import base64
 import sys
+import datetime
 
 import config
 # user = ""
@@ -8,9 +9,11 @@ import config
 #
 # hostname = ""
 
+print("\n\nstarting at " + str(datetime.datetime.now()))
+
 # get current ipv6
 checkIPURL = "http://checkipv6.dyndns.com"
-checkIPContent = urllib.request.urlopen(checkIPURL).read().decode("utf-8")
+checkIPContent = urllib.request.urlopen(checkIPURL).read().decode("utf-8").strip()
 print("IP check response (" + checkIPURL + "): " + checkIPContent)
 myIPv6 = checkIPContent.lower().split("current ip address: ")[1].split("<")[0]
 #print(myIPv6)
@@ -25,12 +28,12 @@ req.add_header('Authorization', 'Basic %s' % encoded_credentials.decode("ascii")
 # actual update
 # https://help.dyn.com/remote-access-api/perform-update/
 with urllib.request.urlopen(req) as response:
-    print(response.read())
-    responseContent = response.read().decode("utf-8")
+    responseContent = response.read().decode("utf-8").strip()
     print("Update response (" + req.full_url + "): " + responseContent)
-    if responseContent is "nochg " + myIPv6:
+
+    if responseContent == "nochg " + myIPv6:
         print("IP identical")
-    elif responseContent is "good " + myIPv6:
+    elif responseContent == "good " + myIPv6:
         print("IP updated")
     else:
         print("Could not update IP!")
