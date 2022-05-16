@@ -12,7 +12,7 @@ import config
 # hostname = ""
 
 
-def get_local_ip():
+def get_local_ipv4():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.settimeout(0)
     try:
@@ -26,14 +26,20 @@ def get_local_ip():
     return IP
 
 
+def get_ipv6():
+    ipv6l = []
+    for i in socket.getaddrinfo(socket.gethostname(), 0, proto=socket.AF_INET6):
+        if i[0] == socket.AddressFamily.AF_INET6:
+            print("Found ipv6: " + str(i))
+            ipv6l.append(i[4][0])
+    return ipv6l[-1]
+
+
 print("\n\nstarting at " + str(datetime.datetime.now()))
 
-# get current ipv6
-checkIPURL = "http://checkipv6.dyndns.com"
-checkIPContent = urllib.request.urlopen(checkIPURL).read().decode("utf-8").strip()
-print("IP check response (" + checkIPURL + "): " + checkIPContent)
-myIPv6 = checkIPContent.lower().split("current ip address: ")[1].split("<")[0]
-ipSetDNS = get_local_ip() + "," + myIPv6
+# get current ip
+myIPv6 = get_ipv6()
+ipSetDNS = get_local_ipv4() + "," + myIPv6
 #print(myIPv6)
 #print(myipv4Local)
 
